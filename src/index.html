@@ -4,9 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Main window</title>
+    <link rel="stylesheet" href="../assets/main.css">
+    <title>SaveIT</title>
 </head>
 <body>
-    <h1>IsBoilerPlate</h1>
+        <nav class="navbar navbar-expand navbar-dark bg-dark" id="menuBar">
+                <div class="nav navbar-nav">
+                    <a class="nav-item nav-link" href="#">Add</a>
+                    <a class="nav-item nav-link" href="#">Create a backup</a>
+                    <a class="nav-item nav-link" href="#">Restore a backup</a>
+                    <a class="nav-item nav-link" href="#">Github Repository</a>
+                    <a class="nav-item nav-link" href="#">Exit</a>
+                </div>
+        </nav>
+ <div class="container-fluid">
+    <div class="row p-2">
+        <input type="text" class="form-control col-4" placeholder="Search">
+     </div>
+     <div class="row p-2">
+        <table class="table table-hover" id="boilers-container">
+            <tr>
+                <td>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</td>
+            </tr>
+            <tr>
+                <td>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</td>
+            </tr>
+        </table>
+     </div>
+ </div>
+    
+   
+    <script src="../assets/index.js"></script>
 </body>
 </html>
