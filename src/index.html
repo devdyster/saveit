@@ -10,11 +10,11 @@
 <body>
         <nav class="navbar navbar-expand navbar-dark bg-dark" id="menuBar">
                 <div class="nav navbar-nav">
-                    <a class="nav-item nav-link" href="#">Add</a>
-                    <a class="nav-item nav-link" href="#">Create a backup</a>
-                    <a class="nav-item nav-link" href="#">Restore a backup</a>
-                    <a class="nav-item nav-link" href="#">Github Repository</a>
-                    <a class="nav-item nav-link" href="#">Exit</a>
+                    <a class="nav-item nav-link" href="#" ><i class="fas fa-plus-circle    "></i> Add</a>
+                    <a class="nav-item nav-link" href="#"><i class="fas fa-save    "></i> Create a backup </a>
+                    <a class="nav-item nav-link" href="#"><i class="fas fa-window-restore    "></i> Restore a backup </a>
+                    <a class="nav-item nav-link" href="#" id="github-btn"><i class="fab fa-github"></i> Github Repository </a>
+                    <a class="nav-item nav-link" href="#" data-toggle="modal" data-target="#exit-modal"><i class="fas fa-power-off    "></i> Exit </a>
                 </div>
         </nav>
  <div class="container-fluid">
@@ -32,7 +32,27 @@
         </table>
      </div>
  </div>
-    
+  
+    <!-- Exit Modal -->
+    <div class="modal fade" id="exit-modal" tabindex="-1" role="dialog" aria-labelledby="Exit modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-power-off    "></i> Exiting the application</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                   Are you sure you want to quit the application ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="exit-btn">Yes i do</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
    
     <script src="../assets/index.js"></script>
 </body>

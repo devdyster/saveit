@@ -1,4 +1,4 @@
-const { app, BrowserWindow , Menu , shell} = require('electron')
+const { app, BrowserWindow , Menu , shell, ipcMain} = require('electron')
 
 
 // Gardez une reference globale de l'objet window, si vous ne le faites pas, la fenetre sera
@@ -27,6 +27,13 @@ function createWindow () {
   win.setMenu(null);
 }
 
+ipcMain.on('exit-the-app', (event,arg) =>{
+    app.quit();
+})
+
+ipcMain.on('github-repo',(event,arg) =>{
+ shell.openExternal('https://github.com/devdyster/saveit');
+});
 // Cette méthode sera appelée quant Electron aura fini
 // de s'initialiser et sera prêt à créer des fenêtres de navigation.
 // Certaines APIs peuvent être utilisées uniquement quand cet événement est émit.
