@@ -1,0 +1,12 @@
+@import '../app.css';
+#boilers-container{
+   width: 100%;
+   margin : 0;
+}
+#boilers-container tr{
+    padding : 12px !important;
+    width: 100%;
+    cursor: pointer;
+}
+
+
