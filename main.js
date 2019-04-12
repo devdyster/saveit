@@ -11,7 +11,7 @@ function createWindow () {
 
   // et charge le index.html de l'application.
   win.loadFile('src/index.html')
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
   // Émit lorsque la fenêtre est fermée.
   win.on('closed', () => {
     // Dé-référence l'objet window , normalement, vous stockeriez les fenêtres
@@ -23,14 +23,20 @@ function createWindow () {
   win.setMenu(null);
 }
 function addWindow(){
-  addWin = new BrowserWindow({ parent : win,frame:false,modal : true,width: 800, height: 460, minWidth : 800, minHeight : 460,maxWidth : 800, maxHeight : 460})
+  addWin = new BrowserWindow({ parent : win,frame:false,modal : true,width: 800, height: 550, minWidth : 800, minHeight : 550,maxWidth : 800, maxHeight : 550})
   addWin.loadFile('src/add.html')
-  // addWin.webContents.openDevTools();
+  addWin.webContents.openDevTools();
   addWin.on('closed', () => {
     addWin = null
   })
   addWin.setMenu(null);
 }
+var knex = require('knex')({
+  client: 'sqlite3',
+  connection: {
+    filename: "./db.sqlite"
+  }
+});
 
 ipcMain.on('exit-the-app', (event,arg) =>{
     // win.closable = true;
@@ -49,10 +55,36 @@ ipcMain.on('open-add-window',(event,arg) => {
 ipcMain.on('close-add-window',(event,arg) =>{
  addWin.close();
 });
+
+ipcMain.on('new-content',function(event,arg){
+    let res = knex('boilers').insert(arg);
+    res.then(function(row){
+      event.sender.send('item-saved', 'saved');
+    })
+})
+
+
 // Cette méthode sera appelée quant Electron aura fini
 // de s'initialiser et sera prêt à créer des fenêtres de navigation.
 // Certaines APIs peuvent être utilisées uniquement quand cet événement est émit.
-app.on('ready', createWindow)
+app.on('ready', () =>{
+  createWindow()
+
+  ipcMain.on('main-window-loaded',(event,arg) =>{
+    console.log(arg)
+    let res = knex.select('title','body','created_at').from('boilers')
+    res.then(function(rows){
+      event.sender.send('items-list',rows);
+    })
+  })
+
+  ipcMain.on('added-new-item',(event,arg) =>{
+    let res = knex.select('title','body','created_at').from('boilers')
+    res.then(function(rows){
+     win.webContents.send('items-list',rows);
+    })
+  })
+})
 
 // Quitte l'application quand toutes les fenêtres sont fermées.
 app.on('window-all-closed', () => {

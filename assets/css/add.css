@@ -3,3 +3,6 @@
 #editor{
     height: 377px;
 }
+#input-container{
+    display: flex;
+}

@@ -4,7 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "rebuild": "electron-rebuild -f -w sqlite3"
   },
   "keywords": [],
   "author": "",
@@ -12,11 +14,14 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
     "electron": "^4.1.4",
+    "electron-builder": "^20.39.0",
     "jquery": "^3.4.0",
     "popper.js": "^1.15.0",
     "quill": "^1.3.6"
   },
   "dependencies": {
-    "bootstrap": "^4.3.1"
+    "bootstrap": "^4.3.1",
+    "knex": "^0.16.5",
+    "sqlite3": "^4.0.6"
   }
 }
