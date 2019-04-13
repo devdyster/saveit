@@ -1,12 +1,15 @@
 require('bootstrap');
 var $ = require('jquery')
 const {ipcRenderer} = require('electron')
+
+// Menu button declaration : 
 var exitBtn = document.getElementById('exit-btn');
 var githubBtn = document.getElementById('github-btn');
 var addBtn = document.getElementById('add');
 
 
 
+// Menu controls
 exitBtn.addEventListener('click', () =>{
     ipcRenderer.send('exit-the-app','exit');
 });
@@ -19,17 +22,28 @@ addBtn.addEventListener('click', () => {
     ipcRenderer.send('open-add-window','add-window');
 });
 
+//Viewing an item : 
+$(document).on('click','#view',function(){
+    let itemid = $(this).data('itemid');
+
+    ipcRenderer.send('view-item',{itemid});
+})
+
+
+// Deleting items : 
 $(document).on('click','#delete',function(){
    let itemid = $(this).data('itemid');
    $('#delete-modal input[name=itemid]').val(itemid);
    $('#delete-modal').modal('show')
 })
 $(document).on('click','#submit-delete',function(){
-    let boilerid = $('#delete-modal input[name=itemid]').val();
-    ipcRenderer.send('delete-item',{boilerid})
+    let itemid = $('#delete-modal input[name=itemid]').val();
+    ipcRenderer.send('delete-item',{itemid})
     $('#delete-modal').modal('hide')
-})
+});
 
+
+//Loading items : 
 document.addEventListener('DOMContentLoaded',function(){
     ipcRenderer.send('main-window-loaded','main-loaded');
  
@@ -49,9 +63,9 @@ document.addEventListener('DOMContentLoaded',function(){
                            <i class="fas fa-cog    "></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-itemid="${item.boilerid}" id="open"><i class="fas fa-book-open"></i> Open</a>
-                            <a class="dropdown-item" href="#"  data-itemid="${item.boilerid}" id="edit"><i class="fas fa-pen-square    "></i> Edit</a>
-                            <a class="dropdown-item" href="#"  data-itemid="${item.boilerid}" id="delete"><i class="fas fa-trash-alt    "></i> Delele</a>
+                            <a class="dropdown-item" href="#" data-itemid="${item.itemid}" id="view"><i class="fas fa-book-open"></i> Open</a>
+                         
+                            <a class="dropdown-item" href="#"  data-itemid="${item.itemid}" id="delete"><i class="fas fa-trash-alt    "></i> Delele</a>
                         </div>
                     </div>
                     </td>
@@ -64,8 +78,8 @@ document.addEventListener('DOMContentLoaded',function(){
         }
       
         
-    })
-})
+    });
+});
 
 
 

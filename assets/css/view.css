@@ -1,0 +1,8 @@
+@import '../app.css';
+
+#editor{
+    height: 377px;
+}
+#inputid{
+    display:none;
+}
