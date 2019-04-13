@@ -3,10 +3,18 @@
    width: 100%;
    margin : 0;
 }
+#table-row{
+    display:none;
+}
 #boilers-container tr{
     padding : 12px !important;
     width: 100%;
     cursor: pointer;
 }
-
+#boilers-container tr:hover{
+  background: rgba(51, 51, 51, 0.103)
+}
+input[name="itemid"]{
+    display : none;
+}
 

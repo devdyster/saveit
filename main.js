@@ -70,19 +70,35 @@ ipcMain.on('new-content',function(event,arg){
 app.on('ready', () =>{
   createWindow()
 
+  //Sending items list to mainWindow
   ipcMain.on('main-window-loaded',(event,arg) =>{
     console.log(arg)
-    let res = knex.select('title','body','created_at').from('boilers')
+    let res = knex.select('boilerid','title','body','created_at').from('boilers')
     res.then(function(rows){
       event.sender.send('items-list',rows);
     })
   })
 
+  // Sending items list to mainWindow  after an addition
   ipcMain.on('added-new-item',(event,arg) =>{
-    let res = knex.select('title','body','created_at').from('boilers')
+    let res = knex.select('boilerid','title','body','created_at').from('boilers')
     res.then(function(rows){
      win.webContents.send('items-list',rows);
     })
+  })
+
+
+  //deleting an item
+  ipcMain.on('delete-item',(event,arg) =>{
+    let res = knex('boilers').where('boilerid',arg.boilerid).del()
+
+    res.then(function(row){
+      let res = knex.select('boilerid','title','body','created_at').from('boilers')
+      res.then(function(rows){
+        event.sender.send('items-list',rows);
+      })
+    })
+
   })
 })
 
