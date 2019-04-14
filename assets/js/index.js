@@ -2,10 +2,14 @@ require('bootstrap');
 var $ = require('jquery')
 const {ipcRenderer} = require('electron')
 
+
 // Menu button declaration : 
 var exitBtn = document.getElementById('exit-btn');
 var githubBtn = document.getElementById('github-btn');
 var addBtn = document.getElementById('add');
+var createBackupBtn = document.getElementById('create-backup')
+
+
 
 
 
@@ -21,6 +25,10 @@ githubBtn.addEventListener('click', () =>{
 addBtn.addEventListener('click', () => {
     ipcRenderer.send('open-add-window','add-window');
 });
+
+createBackupBtn.addEventListener('click',() =>{
+   ipcRenderer.send('create-backup-dialog')
+})
 
 //Viewing an item : 
 $(document).on('click','#view',function(){

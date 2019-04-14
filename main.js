@@ -1,6 +1,6 @@
-const { app, BrowserWindow , Menu , shell, ipcMain} = require('electron')
+const { app, BrowserWindow , Menu , shell, ipcMain ,dialog} = require('electron')
 
-
+const fs = require('fs');
 // Gardez une reference globale de l'objet window, si vous ne le faites pas, la fenetre sera
 // fermee automatiquement quand l'objet JavaScript sera garbage collected.
 let win
@@ -14,7 +14,7 @@ function createWindow () {
 
   // et charge le index.html de l'application.
   win.loadFile('src/index.html')
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
   // Émit lorsque la fenêtre est fermée.
   win.on('closed', () => {
     // Dé-référence l'objet window , normalement, vous stockeriez les fenêtres
@@ -102,7 +102,12 @@ ipcMain.on('save-item',(event,arg) => {
   })
 })
 
-
+ipcMain.on('create-backup-dialog',(event,arg) => {
+  let savePath = dialog.showSaveDialog(win,{title : 'Choose where to save the backup',defaultPath :'backup',filters : [{name : 'sqlite file',extensions : ['sqlite']}]})
+  fs.copyFile('./db.sqlite',savePath, (err) => {
+    if(err) throw err;
+  })
+})
 
 // Cette méthode sera appelée quant Electron aura fini
 // de s'initialiser et sera prêt à créer des fenêtres de navigation.
