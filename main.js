@@ -6,6 +6,7 @@ const fs = require('fs');
 let win
 let addWin
 let viewWin
+let readWin
 
 var currentItem= [];
 function createWindow () {
@@ -14,7 +15,7 @@ function createWindow () {
 
   // et charge le index.html de l'application.
   win.loadFile('src/index.html')
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
   // Émit lorsque la fenêtre est fermée.
   win.on('closed', () => {
     // Dé-référence l'objet window , normalement, vous stockeriez les fenêtres
@@ -52,6 +53,19 @@ function viewWindow(){
   viewWin.show();
 })
 }
+
+function readWindow(){
+ readWin = new BrowserWindow({show:false, parent : win,width: 1024, height: 550, minWidth : 800, minHeight : 550,maxWidth : 1280, maxHeight : 550})
+ readWin.loadFile('src/read.html')
+//  readWin.webContents.openDevTools();
+ readWin.on('closed', () => {
+   readWin = null
+   })
+ readWin.setMenu(null);
+ readWin.once('ready-to-show', () => {
+  readWin.show();
+ })
+ }
 var knex = require('knex')({
   client: 'sqlite3',
   connection: {
@@ -85,7 +99,7 @@ ipcMain.on('close-view-item',(event,arg) => {
 ipcMain.on('new-content',function(event,arg){
     let res = knex('boilers').insert(arg);
     res.then(function(row){
-      event.sender.send('item-saved', 'saved');
+      event.sender.send('item-saved');
     })
 })
 
@@ -104,9 +118,12 @@ ipcMain.on('save-item',(event,arg) => {
 
 ipcMain.on('create-backup-dialog',(event,arg) => {
   let savePath = dialog.showSaveDialog(win,{title : 'Choose where to save the backup',defaultPath :'backup',filters : [{name : 'sqlite file',extensions : ['sqlite']}]})
-  fs.copyFile('./db.sqlite',savePath, (err) => {
-    if(err) throw err;
-  })
+  if(savePath){
+    fs.copyFile('./db.sqlite',savePath, (err) => {
+      if(err) throw err;
+    })
+  }
+ 
 })
 
 // Cette méthode sera appelée quant Electron aura fini
@@ -146,6 +163,21 @@ app.on('ready', () =>{
      viewWin.webContents.send('item-to-view',currentItem)
      currenItem = [];
   })
+
+  //reading an item : 
+  ipcMain.on('read-item',(event,arg) => {
+    readWindow();
+    let res  = knex('boilers').where('itemid',arg.itemid)
+    res.then(function(rows){
+       currentItem =[...rows]
+    })
+  })
+
+  ipcMain.on('read-loaded',(event,arg) => {
+     readWin.webContents.send('item-to-read',currentItem)
+     currentItem = [];
+  })
+
 
   //deleting an item
   ipcMain.on('delete-item',(event,arg) =>{

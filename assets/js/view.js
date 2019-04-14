@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded',function(){
         theme: 'snow'
       };
     var quillEditor = new Quill(editor,options)
-    ipcRenderer.send('view-loaded','view-loaded');
+    ipcRenderer.send('view-loaded');
     quillEditor.on('text-change',function(){
        let content =  editor.children[0].innerHTML
        if(content != original){
@@ -42,14 +42,14 @@ ipcRenderer.on('item-to-view',(event,arg) =>{
 closeBtn.addEventListener('click',() =>{
     console.log(original)
     if(original == editor.children[0].innerHTML){
-        ipcRenderer.send('close-view-item','close-view-item');
+        ipcRenderer.send('close-view-item');
     }else{
         $('#close-modal').modal('show');
     }
 })
 
 closeModalBtn.addEventListener('click',()=>{
-    ipcRenderer.send('close-view-item','close-view-item');
+    ipcRenderer.send('close-view-item');
 })
 
 saveModalBtn.addEventListener('click',() => {

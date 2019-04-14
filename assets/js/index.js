@@ -30,13 +30,17 @@ createBackupBtn.addEventListener('click',() =>{
    ipcRenderer.send('create-backup-dialog')
 })
 
-//Viewing an item : 
+// reading item :
+$(document).on('click','#read',function(){
+    let itemid = $(this).data('itemid')
+    ipcRenderer.send('read-item',{itemid})
+});
+
+//Viewing/editing an item : 
 $(document).on('click','#view',function(){
     let itemid = $(this).data('itemid');
-
     ipcRenderer.send('view-item',{itemid});
 })
-
 
 // Deleting items : 
 $(document).on('click','#delete',function(){
@@ -62,16 +66,16 @@ document.addEventListener('DOMContentLoaded',function(){
             $('#boilers-container').empty();
             arg.forEach((item) => {
                 $('#boilers-container').append(
-                   `<tr>
-                    <td>${item.title}</td>
-                    <td>${item.created_at}</td>
+                   `<tr title="Created at ${item.created_at}">
+                    <td class="itemColumn" itemid="${item.itemid}">${item.title}</td>
+                    <td><button class="btn btn-outline-dark btn-sm" id="read" data-itemid="${item.itemid}"><i class="fas fa-book-open    "></i></button> </td>
                     <td>
                     <div class="dropdown">
                         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                            <i class="fas fa-cog    "></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-itemid="${item.itemid}" id="view"><i class="fas fa-book-open"></i> Open</a>
+                            <a class="dropdown-item" href="#" data-itemid="${item.itemid}" id="view"><i class="fas fa-pen-square    "></i> Edit</a>
                          
                             <a class="dropdown-item" href="#"  data-itemid="${item.itemid}" id="delete"><i class="fas fa-trash-alt    "></i> Delele</a>
                         </div>
