@@ -7,10 +7,24 @@ const {ipcRenderer} = require('electron')
 var exitBtn = document.getElementById('exit-btn');
 var githubBtn = document.getElementById('github-btn');
 var addBtn = document.getElementById('add');
-var createBackupBtn = document.getElementById('create-backup')
+var createBackupBtn = document.getElementById('create-backup');
 
 
+// search input 
+var search = document.getElementById('search');
 
+
+// Search control 
+
+search.addEventListener('keyup',(e)=>{
+    let txt = e.currentTarget.value;
+    if(txt.trim()!=''){
+     ipcRenderer.send('search-item',{txt})
+    }else{
+     ipcRenderer.send('main-window-loaded');
+    }
+   
+})
 
 
 // Menu controls
@@ -57,7 +71,7 @@ $(document).on('click','#submit-delete',function(){
 
 //Loading items : 
 document.addEventListener('DOMContentLoaded',function(){
-    ipcRenderer.send('main-window-loaded','main-loaded');
+    ipcRenderer.send('main-window-loaded');
  
     ipcRenderer.on('items-list',(event,arg) =>{
         if(arg.length > 0){

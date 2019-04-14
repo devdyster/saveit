@@ -15,7 +15,7 @@ function createWindow () {
 
   // et charge le index.html de l'application.
   win.loadFile('src/index.html')
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
   // Émit lorsque la fenêtre est fermée.
   win.on('closed', () => {
     // Dé-référence l'objet window , normalement, vous stockeriez les fenêtres
@@ -134,7 +134,6 @@ app.on('ready', () =>{
 
   //Sending items list to mainWindow
   ipcMain.on('main-window-loaded',(event,arg) =>{
-    console.log(arg)
     let res = knex.select('itemid','title','body','created_at').from('boilers')
     res.then(function(rows){
       event.sender.send('items-list',rows);
@@ -153,7 +152,6 @@ app.on('ready', () =>{
   ipcMain.on('view-item',(event,arg) =>{
      viewWindow();
      let res = knex('boilers').where('itemid',arg.itemid)
-
      res.then(function(rows){
       currentItem = [...rows];
      })
@@ -190,6 +188,14 @@ app.on('ready', () =>{
       })
     })
 
+  })
+
+  //searching item : 
+  ipcMain.on('search-item',(event,arg) => {
+      let res = knex('boilers').where('title','like',`${arg.txt}%`)
+      res.then(function(rows){
+        win.webContents.send('items-list',rows)
+      })
   })
 })
 
