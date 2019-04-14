@@ -1,6 +1,8 @@
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 @import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 @import '../node_modules/quill/dist/quill.snow.css';
+@import '../node_modules/highlight.js/styles/monokai-sublime.css';
+
 @font-face{
     src : 'fonts/expressway rg.ttf';
     font-family: 'expressway';
@@ -16,8 +18,7 @@ html, body{
         font-family: 'expressway';
        background-image: url("imgs/background.jpg");
        background-size: 100% 100%;
-       background-repeat: repeat;
-     
+       background-repeat: repeat; 
    }
 
    #menuBar{

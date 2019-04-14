@@ -31,7 +31,7 @@ function createWindow () {
 function addWindow(){
   addWin = new BrowserWindow({ show:false,parent : win,frame:false,modal : true,width: 800, height: 550, minWidth : 800, minHeight : 550,maxWidth : 800, maxHeight : 550})
   addWin.loadFile('src/add.html')
-  // addWin.webContents.openDevTools();
+  addWin.webContents.openDevTools();
   addWin.on('closed', () => {
     addWin = null
   })
@@ -57,7 +57,7 @@ function viewWindow(){
 function readWindow(){
  readWin = new BrowserWindow({show:false, parent : win,width: 1024, height: 550, minWidth : 800, minHeight : 550,maxWidth : 1280, maxHeight : 550})
  readWin.loadFile('src/read.html')
-//  readWin.webContents.openDevTools();
+ readWin.webContents.openDevTools();
  readWin.on('closed', () => {
    readWin = null
    })

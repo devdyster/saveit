@@ -1,7 +1,7 @@
 var $ = require('jquery')
 require('bootstrap')
 const {ipcRenderer} = require('electron')
-
+var hljs = require('highlight.js')
 
 document.addEventListener('DOMContentLoaded',function(){
     ipcRenderer.send('read-loaded');
@@ -15,4 +15,8 @@ ipcRenderer.on('item-to-read',(event,arg) => {
          <p>${arg[0].body}</p>
         `
     )
+    document.querySelectorAll('pre').forEach((block) => {
+        console.log(block)
+        hljs.highlightBlock(block);
+      });
 })

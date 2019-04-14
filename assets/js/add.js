@@ -2,6 +2,7 @@ var $ = require('jquery')
 require('bootstrap')
 var Quill = require('quill')
 const {ipcRenderer} = require('electron')
+var hljs = require('highlight.js')
 
 var editor = document.getElementById('editor')
 var titleInput = document.getElementById('title')
@@ -28,13 +29,34 @@ function pad(n){
 }
 
 window.onload = function(){
-   
+    var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+      
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'direction': 'rtl' }],                         // text direction
+      
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      
+        [{ 'align': [] }],
+        ['clean']                                         // remove formatting button
+      ];
     var options = {
+        modules : {
+            toolbar : toolbarOptions
+        },
         placeholder: 'You note goes here ..',
         readOnly: false,
         theme: 'snow'
       };
     var quillEditor = new Quill(editor,options)
+    quillEditor.on('text-change',function(){
+        document.querySelectorAll('pre').forEach((block) => {
+            console.log(block)
+            hljs.highlightBlock(block);
+          });
+     })
 }
 var closeBtn = document.getElementById('close-btn')
 var addBtn = document.getElementById('add')
