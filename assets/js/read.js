@@ -16,7 +16,6 @@ ipcRenderer.on('item-to-read',(event,arg) => {
         `
     )
     document.querySelectorAll('pre').forEach((block) => {
-        console.log(block)
         hljs.highlightBlock(block);
       });
 })

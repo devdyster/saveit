@@ -15,7 +15,7 @@ function createWindow () {
 
   // et charge le index.html de l'application.
   win.loadFile('src/index.html')
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
   // Émit lorsque la fenêtre est fermée.
   win.on('closed', () => {
     // Dé-référence l'objet window , normalement, vous stockeriez les fenêtres
@@ -31,7 +31,7 @@ function createWindow () {
 function addWindow(){
   addWin = new BrowserWindow({ show:false,parent : win,frame:false,modal : true,width: 800, height: 550, minWidth : 800, minHeight : 550,maxWidth : 800, maxHeight : 550})
   addWin.loadFile('src/add.html')
-  addWin.webContents.openDevTools();
+  // addWin.webContents.openDevTools();
   addWin.on('closed', () => {
     addWin = null
   })
@@ -57,7 +57,7 @@ function viewWindow(){
 function readWindow(){
  readWin = new BrowserWindow({show:false, parent : win,width: 1024, height: 550, minWidth : 800, minHeight : 550,maxWidth : 1280, maxHeight : 550})
  readWin.loadFile('src/read.html')
- readWin.webContents.openDevTools();
+//  readWin.webContents.openDevTools();
  readWin.on('closed', () => {
    readWin = null
    })
@@ -65,6 +65,32 @@ function readWindow(){
  readWin.once('ready-to-show', () => {
   readWin.show();
  })
+ }
+
+ function restore(){
+  let res = dialog.showOpenDialog(win,{title : 'Choose your backup file to restore',filters : [{name : 'sqlite file',extensions : ['sqlite']}]})
+  if(res){
+    let filepath = res[0];
+    fs.copyFile(filepath,'./db.sqlite', (err) => {
+      if(err) throw err;
+    })
+    let query = knex.select('itemid','title','body','created_at').from('boilers')
+    query.then(function(rows){
+      win.webContents.send('items-list',rows);
+    })
+  }
+  return res;
+ 
+ }
+
+ function save(){
+  let savePath = dialog.showSaveDialog(win,{title : 'Choose where to save the backup',defaultPath :'backup',filters : [{name : 'sqlite file',extensions : ['sqlite']}]})
+  if(savePath){
+    fs.copyFile('./db.sqlite',savePath, (err) => {
+      if(err) throw err;
+    })
+  }
+  return savePath;
  }
 var knex = require('knex')({
   client: 'sqlite3',
@@ -107,7 +133,6 @@ ipcMain.on('save-item',(event,arg) => {
  let res =  knex('boilers').where('itemid',arg.itemid).update({
     body: arg.body
   })
-
   res.then(function(row){
     if(arg.close){
       viewWin.setClosable(true)
@@ -116,14 +141,32 @@ ipcMain.on('save-item',(event,arg) => {
   })
 })
 
+// Backuping data : 
 ipcMain.on('create-backup-dialog',(event,arg) => {
-  let savePath = dialog.showSaveDialog(win,{title : 'Choose where to save the backup',defaultPath :'backup',filters : [{name : 'sqlite file',extensions : ['sqlite']}]})
-  if(savePath){
-    fs.copyFile('./db.sqlite',savePath, (err) => {
-      if(err) throw err;
-    })
-  }
- 
+  save()
+})
+
+//Backuping then restoring data
+ipcMain.on('save-then-restore',(event,arg) => {
+  if(save())
+  restore()
+})
+ //Checking if db is empty before restoring 
+ipcMain.on('check-if-empty',(event,arg) => {
+   let res = knex('boilers').count('itemid')
+   res.then(function(count){
+     let num = parseInt(Object.values(count[0])[0]);
+     if(num > 0){
+       event.sender.send('db-not-empty')
+
+     }else{
+      restore()
+     }
+   })
+})
+
+ipcMain.on('restore-backup',(event,arg) => {
+  restore()
 })
 
 // Cette méthode sera appelée quant Electron aura fini
@@ -156,7 +199,6 @@ app.on('ready', () =>{
       currentItem = [...rows];
      })
   })
-
   ipcMain.on('view-loaded',(event,arg) =>{
      viewWin.webContents.send('item-to-view',currentItem)
      currenItem = [];
@@ -170,7 +212,6 @@ app.on('ready', () =>{
        currentItem =[...rows]
     })
   })
-
   ipcMain.on('read-loaded',(event,arg) => {
      readWin.webContents.send('item-to-read',currentItem)
      currentItem = [];

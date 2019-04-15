@@ -53,7 +53,6 @@ window.onload = function(){
     var quillEditor = new Quill(editor,options)
     quillEditor.on('text-change',function(){
         document.querySelectorAll('pre').forEach((block) => {
-            console.log(block)
             hljs.highlightBlock(block);
           });
      })

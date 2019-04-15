@@ -8,6 +8,7 @@ var exitBtn = document.getElementById('exit-btn');
 var githubBtn = document.getElementById('github-btn');
 var addBtn = document.getElementById('add');
 var createBackupBtn = document.getElementById('create-backup');
+var restoreBackupBtn = document.getElementById('restore-backup');
 
 
 // search input 
@@ -44,6 +45,10 @@ createBackupBtn.addEventListener('click',() =>{
    ipcRenderer.send('create-backup-dialog')
 })
 
+restoreBackupBtn.addEventListener('click',() => {
+    ipcRenderer.send('check-if-empty');
+})
+
 // reading item :
 $(document).on('click','#read',function(){
     let itemid = $(this).data('itemid')
@@ -68,7 +73,20 @@ $(document).on('click','#submit-delete',function(){
     $('#delete-modal').modal('hide')
 });
 
+// Backup restore
+ipcRenderer.on('db-not-empty',(event,arg) => {
+    $('#restore-modal').modal('show')
+})
 
+$(document).on('click','#restore-save',function(){
+    ipcRenderer.send('save-then-restore')
+    $('#restore-modal').modal('hide')
+})
+
+$(document).on('click','#restore-erase',function(){
+    ipcRenderer.send('restore-backup')
+    $('#restore-modal').modal('hide')
+})
 //Loading items : 
 document.addEventListener('DOMContentLoaded',function(){
     ipcRenderer.send('main-window-loaded');
